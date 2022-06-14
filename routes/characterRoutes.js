@@ -70,4 +70,18 @@ router.get('/:idR', async (req, res) => {
   }
 })
 
+router.delete('/:id', async(req, res) =>{
+  try{
+    const {id} = req.params;
+    await Character.destroy({
+      where: {
+        id,
+      }
+    });
+    res.status(200).send('Personaje borrado exitosamente')
+  } catch(error){
+    return res.status(404).json({message: error.message})
+  }
+})
+
 module.exports = router;

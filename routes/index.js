@@ -1,9 +1,10 @@
 const { Router } = require('express');
 const characters = require('./characterRoutes');
+const movies = require('./movieRoutes');
 const router = Router();
 
 router.use('/characters', characters);
-/*router.use('/types', diets);
-router.use('/recipe', recipe);*/
+router.use('/movies', movies);
+/*router.use('/recipe', recipe);*/
 
 module.exports = router;

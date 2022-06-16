@@ -42,7 +42,6 @@ const getDbInfo = async () => {
     res.send('Pelicula cargada con exito');
   })
   
-  
   router.get('/:idR', async (req, res) => {
     const { idR } = req.params;
     const allInfo = await getDbInfo();
@@ -60,6 +59,38 @@ const getDbInfo = async () => {
       });
     } catch (error) {
       console.log(error);
+    }
+  })
+  
+  router.put('/:id', async(req,res) =>{
+    try{
+      let id = req.params.id
+      let { title, createdDate, score, image } = req.body
+      await Movie.update(
+        { title, createdDate, score, image},
+        {
+          where: {
+            id
+          }
+        });
+        res.status(200).send('Pelicula modificada exitosamente')
+  
+    } catch(error){
+      res.status(404).send('No se pudo actualizar la pelicula')
+    }
+  })
+  
+  router.delete('/:id', async(req, res) =>{
+    try{
+      const {id} = req.params;
+      await Movie.destroy({
+        where: {
+          id,
+        }
+      });
+      res.status(200).send('Pelicula borrada exitosamente')
+    } catch(error){
+      return res.status(404).json({message: error.message})
     }
   })
   

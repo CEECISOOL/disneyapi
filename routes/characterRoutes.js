@@ -70,6 +70,24 @@ router.get('/:idR', async (req, res) => {
   }
 })
 
+router.put('/:id', async(req,res) =>{
+  try{
+    let id = req.params.id
+    let { name, age, weight, history, image } = req.body
+    await Character.update(
+      { name, age, weight, history, image},
+      {
+        where: {
+          id
+        }
+      });
+      res.status(200).send('Personaje modificado exitosamente')
+
+  } catch(error){
+    res.status(404).send('No se pudo actualizar el personaje')
+  }
+})
+
 router.delete('/:id', async(req, res) =>{
   try{
     const {id} = req.params;

@@ -3,8 +3,19 @@ const { Character, Movie } = require('../db');
 const router = Router();
 
 const getDbInfo = async () => {
-  const dbInfo = await Character.findAll()
-  return dbInfo
+ const db = await Character.findAll({
+  include: {
+      model: Movie,
+      attributes: ['title'],
+      through: {
+          attributes: [],
+      }
+  }
+});
+console.log (db)
+
+return db
+
 }
 
 router.get('/', async (req, res) => {
@@ -23,12 +34,19 @@ router.get('/', async (req, res) => {
       res.send(charactersAge) :
       res.send("not found")
   } else {
-    res.status(200).send(allCharacters)
+    const nameImage = allCharacters.map(e => {
+      return {
+        name: e.name,
+        image: e.image
+      }
+    })
+    res.status(200).send(nameImage)
+
   }
 })
 
 router.post('/', async (req, res) => {
-  const { name, age, weight, history, image } = req.body;
+  const { name, age, weight, history, image, movie } = req.body;
 
   let characterCreate = await Character.create({
     name,
@@ -38,14 +56,14 @@ router.post('/', async (req, res) => {
     image
   });
 
-  //let moviesDb = await Movie.findAll({
-  //where: {
-  //name: movie,
-  // }
-  // });
+  let moviesDb = await Movie.findAll({
+    where: {
+      title: movie,
+    }
+  });
 
-  //await characterCreate.addMovie(moviesDb);
-  res.send('Personaje cargado con exito');
+  const final = await characterCreate.addMovie(moviesDb);
+  res.send(final);
 })
 
 
@@ -70,35 +88,35 @@ router.get('/:idR', async (req, res) => {
   }
 })
 
-router.put('/:id', async(req,res) =>{
-  try{
+router.put('/:id', async (req, res) => {
+  try {
     let id = req.params.id
     let { name, age, weight, history, image } = req.body
     await Character.update(
-      { name, age, weight, history, image},
+      { name, age, weight, history, image },
       {
         where: {
           id
         }
       });
-      res.status(200).send('Personaje modificado exitosamente')
+    res.status(200).send('Personaje modificado exitosamente')
 
-  } catch(error){
+  } catch (error) {
     res.status(404).send('No se pudo actualizar el personaje')
   }
 })
 
-router.delete('/:id', async(req, res) =>{
-  try{
-    const {id} = req.params;
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
     await Character.destroy({
       where: {
         id,
       }
     });
     res.status(200).send('Personaje borrado exitosamente')
-  } catch(error){
-    return res.status(404).json({message: error.message})
+  } catch (error) {
+    return res.status(404).json({ message: error.message })
   }
 })
 

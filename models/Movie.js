@@ -8,7 +8,7 @@ module.exports = (sequelize) => {
             allowNull: false,
         },
         createdDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.STRING,
             allowNull: false
         },
         score: {

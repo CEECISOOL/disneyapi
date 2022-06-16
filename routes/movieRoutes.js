@@ -18,7 +18,14 @@ const getDbInfo = async () => {
     }
     
      else {
-      res.status(200).send(allMovies)
+      const nameImageCreatedDate = allMovies.map(e=>{
+        return{        
+          title: e.title,
+          image: e.image,
+          createdDate: e.createdDate
+        }
+        })   
+        res.status(200).send(nameImageCreatedDate)
     }
   })
   
